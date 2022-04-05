@@ -72,7 +72,7 @@ def print_kml_lookup(file_name, coord, range_value):
     print('    </LookAt>', file=file_name)
 
 
-def print_kml_gx_animate(file_name, coord):
+def print_kml_gx_animate(file_name, coord, wait_time=0.02):
     """Gennerate animate segment."""
     print('''
     <gx:Tour>
@@ -93,7 +93,7 @@ def print_kml_gx_animate(file_name, coord):
             </gx:AnimatedUpdate>
 
             <gx:Wait><gx:duration>''',
-              0.02,
+              wait_time,
               '''</gx:duration></gx:Wait>
         ''', sep="", end="", file=file_name)
         id += 1
@@ -153,6 +153,8 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--gpx_file", help="Input a gpx file to convert")
     parser.add_argument("-r", "--range_value", nargs='?', const=1, type=int,
                         help="Range value for google earth.", default=3500)
+    parser.add_argument("-w", "--wait_time", nargs='?', const=0.02, type=float,
+                        help="Range value for google earth.", default=3500)
     args = parser.parse_args()
     # print(args.gpx_file)
     track_name, track_coord = parse_gpx(args.gpx_file)
@@ -164,7 +166,7 @@ if __name__ == "__main__":
     # sys.stdout = f
     print_kml_header(f, track_name)
     print_kml_lookup(f, track_coord, args.range_value)
-    print_kml_gx_animate(f, track_coord)
+    print_kml_gx_animate(f, track_coord, args.wait_time)
     print_kml_placemark(f, track_coord)
     print_kml_footer(f)
     f.close()
